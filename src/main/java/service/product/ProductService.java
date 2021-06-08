@@ -67,7 +67,7 @@ public class ProductService implements IProductService {
 
     @Override
     public void edit(int index, Product product) {
-        String update = "update Products set name=?,  price=?, quanlity=?,color=?, description=? category_id=? where id=?  ";
+        String update = "update  Products set name=?, price=?, quanlity=?,color=?, description=?, category_id=? where id=?  ";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(update);
             preparedStatement.setInt(7,index);
