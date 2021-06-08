@@ -15,7 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(name = "Controller", value = "product")
+@WebServlet(name = "Controller", value = "/product")
 public class Controller extends HttpServlet {
     IProductService productService = new ProductService();
     ICategoryService catelogyService = new CategoryService();
@@ -31,9 +31,9 @@ public class Controller extends HttpServlet {
 
 
         switch (action) {
-//            case "create":
-//                showCreatProduct(request,response);
-//                break;
+            case "create":
+                showCreatProduct(request,response);
+                break;
 //            case "edit":
 //                showUpdateProduct(request, response);
 //                break;
@@ -117,23 +117,23 @@ public class Controller extends HttpServlet {
 //
 //    }
 
-//    private void showCreatProduct(HttpServletRequest request, HttpServletResponse response) {
-//        ArrayList<Category> categories = catalogyService.findAll();
-//
-//        RequestDispatcher dispatcher = request.getRequestDispatcher("/products/create.jsp");
-//        request.setAttribute("categories", categories);
-//        Product product =new Product();
-//        request.setAttribute("product", product);
+    private void showCreatProduct(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+        ArrayList<Category> categories = catelogyService.findAll();
 
-//        try {
-//            dispatcher.forward(request,response);
-//        } catch (ServletException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/products/create.jsp");
+        request.setAttribute("categories", categories);
+        Product product =new Product();
+        request.setAttribute("product", product);
+
+        try {
+            dispatcher.forward(request,response);
+        } catch (ServletException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     private void showAllProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
         RequestDispatcher dispatcher = request.getRequestDispatcher("/products/list.jsp");
@@ -142,7 +142,7 @@ public class Controller extends HttpServlet {
 
         ProductList = productService.findAll();
 
-        request.setAttribute("bookList", ProductList);
+        request.setAttribute("dssp", ProductList);
 
         dispatcher.forward(request, response);
 
