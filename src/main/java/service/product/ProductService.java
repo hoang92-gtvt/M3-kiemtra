@@ -54,7 +54,7 @@ public class ProductService implements IProductService {
             preparedStatement.setInt(3,product.getQuanlity());
             preparedStatement.setString(4,product.getColor());
             preparedStatement.setString(5,product.getDescription());
-//            preparedStatement.setString(4,product.getProducer());
+
             preparedStatement.setInt(6,product.getCategory().getId());
 
             System.out.println(preparedStatement);
@@ -89,19 +89,14 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public void delete(int index) {
-//
-//        String delete = "delete from Product where id=? ";
-//        try {
-//            PreparedStatement preparedStatement = connection.prepareStatement(delete);
-//            preparedStatement.setInt(1,index);
-//            preparedStatement.executeUpdate();
-//
-//        } catch (SQLException throwables) {
-//            throwables.printStackTrace();
-//        }
-//
-//
+    public void delete(int index) throws SQLException {
+
+        connection.setAutoCommit(false);
+        PreparedStatement statement1 = connection.prepareStatement("delete from Products where id= ?");
+        statement1.setInt(1,index);
+        statement1.executeUpdate();
+
+        connection.commit();
     }
 
     @Override
@@ -133,6 +128,40 @@ public class ProductService implements IProductService {
         }
 
         return product;
+    }
+
+    @Override
+    public ArrayList<Product> findProductByName(String value) throws SQLException {
+
+
+        ArrayList<Product> productList = new ArrayList<>();
+
+        String keyString = "%"+ value + "%";
+
+        CallableStatement statement = connection.prepareCall("Call findListBookByName(?)");
+        statement.setString(1,keyString);
+        ResultSet result = statement.executeQuery();
+
+        while (result.next()) {
+
+            int id = result.getInt(1);
+            String name = result.getString(2);
+            float price = result.getFloat(3);
+            int quanlity = result.getInt(4);
+            String color = result.getString(5);
+            int category_id = result.getInt(6);
+            String category_name= result.getString(7);
+
+            String description = "";
+
+            Category category = new Category (category_id, category_name);
+
+            Product product = new Product(id, name, quanlity,price, color,description, category );
+
+            productList.add(product);
+
+        }
+        return productList;
     }
 }
 

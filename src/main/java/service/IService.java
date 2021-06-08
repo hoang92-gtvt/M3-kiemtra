@@ -7,6 +7,6 @@ public interface IService<E> {
     ArrayList<E> findAll() throws SQLException;
     void create(E newE);
     void edit(int index, E newE);
-    void delete(int index);
+    void delete(int index) throws SQLException;
     E getObjectById(int id);
 }

@@ -16,6 +16,25 @@
 <h1>Danh sách sản phẩm</h1>
 
 <div><a href="/product?action=create">Thêm sản phẩm</a></div>
+<div>
+
+<%--    <input id="abc" name ="key" type="text" value =""/>--%>
+<%--   <script>--%>
+<%--       var  id = document.getElementById("abc");--%>
+<%--   </script>--%>
+
+<%--    <c:set var = "keyword" scope = "session" value="${id}"  />--%>
+
+<%--    <button ><a href="/product?action=find&key=${keyword}">Tìm kiếm</a></button>--%>
+
+        <form action="product?action=find" method="post">
+            <input id="abc" name ="key" type="text" value =""/>
+            <button type="submit">Tìm kiếm</button>
+
+        </form>
+
+
+</div>
 <table border="1" cellspacing="0px" cellpadding="0.5px">
     <tr>
         <th>ID</th>

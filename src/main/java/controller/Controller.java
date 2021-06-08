@@ -36,12 +36,15 @@ public class Controller extends HttpServlet {
             case "edit":
                 showUpdateProduct(request, response);
                 break;
-//            case "delete" :
-//                alertDeleteProduct(request, response);
-//                break;
-//            case "detail" :
-//                showDetailProduct(request,response);
-//                break;
+            case "delete" :
+                showFormDelete(request, response);
+                break;
+            case "find" :
+                 String value = request.getParameter("key");
+
+//                String value = "phone";
+                find(request,response, value);
+                break;
             default:
                 showAllProduct(request, response);
                 break;
@@ -54,6 +57,28 @@ public class Controller extends HttpServlet {
 
     }
 
+    private void find(HttpServletRequest request, HttpServletResponse response, String key) throws ServletException, IOException, SQLException {
+
+        ArrayList<Product> products = productService.findProductByName(key);
+
+
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/products/list.jsp");
+
+        request.setAttribute("dssp", products);
+
+        dispatcher.forward(request, response);
+
+    }
+
+
+    private void showFormDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//        int id = Integer.parseInt(request.getParameter("id"));
+
+        RequestDispatcher dispatcher = request.getRequestDispatcher("products/delete.jsp");
+//        request.setAttribute("id", id);
+        dispatcher.forward(request,response);
+
+    }
     private void showUpdateProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
         RequestDispatcher dispatcher;
 
@@ -98,15 +123,16 @@ public class Controller extends HttpServlet {
     private void showAllProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
         RequestDispatcher dispatcher = request.getRequestDispatcher("/products/list.jsp");
 
-        ArrayList<Product> ProductList = new ArrayList<>();
+        ArrayList<Product> productList = new ArrayList<>();
 
-        ProductList = productService.findAll();
+        productList = productService.findAll();
 
-        request.setAttribute("dssp", ProductList);
+        request.setAttribute("dssp", productList);
 
         dispatcher.forward(request, response);
 
     }
+
 
 
     @Override
@@ -118,16 +144,19 @@ public class Controller extends HttpServlet {
 
         try{
             switch (action) {
-                case "create":
+            case "create":
                     creatProduct(request, response);
                     break;
             case "edit":
                 updateProduct(request, response);
                 break;
-//            case "delete" :
-//                break;
-//            case "detail" :
-//                break;
+            case "delete" :
+                  delete(request,response);
+                break;
+          case "find" :
+                 String value = request.getParameter("key");
+                 find(request,response, value);
+                break;
             default :
                 showAllProduct(request, response);
                 break;
@@ -138,6 +167,8 @@ public class Controller extends HttpServlet {
         }
 
     }
+
+
 
     private void updateProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException, IOException {
 
@@ -165,8 +196,6 @@ public class Controller extends HttpServlet {
     }
 
 
-
-
     private void creatProduct(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 //            int id = Integer.parseInt(request.getParameter("id"));
@@ -191,5 +220,13 @@ public class Controller extends HttpServlet {
 
 
         }
+
+    private void delete(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException, IOException {
+
+        int id = Integer.parseInt(request.getParameter("id"));
+        productService.delete(id);
+        showAllProduct(request, response);
+
+    }
 
 }
