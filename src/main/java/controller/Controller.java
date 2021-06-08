@@ -29,14 +29,13 @@ public class Controller extends HttpServlet {
 
         try{
 
-
         switch (action) {
             case "create":
                 showCreatProduct(request,response);
                 break;
-//            case "edit":
-//                showUpdateProduct(request, response);
-//                break;
+            case "edit":
+                showUpdateProduct(request, response);
+                break;
 //            case "delete" :
 //                alertDeleteProduct(request, response);
 //                break;
@@ -54,76 +53,37 @@ public class Controller extends HttpServlet {
 
 
     }
-//    private void showDetailProduct(HttpServletRequest request, HttpServletResponse response) {
-//        RequestDispatcher dispatcher;
-//
-//        int index = Integer.parseInt(request.getParameter("id"));
-//        Product product = productService.getProductByIndex(index);
-//
-//        request.setAttribute("product",product);
-//        request.setAttribute("index", index);
-//
-//        if(product== null){
-//            dispatcher= request.getRequestDispatcher("error-404.jsp");
-//        } else {
-//            dispatcher = request.getRequestDispatcher("/products/detail.jsp");
-//        }
-//
-//
-//        try {
-//            dispatcher.forward(request,response);
-//        } catch (ServletException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//    }
+
+    private void showUpdateProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+        RequestDispatcher dispatcher;
+
+        int index = Integer.parseInt(request.getParameter("id"));
+
+        Product product = productService.getObjectById(index);
+        ArrayList<Category> categories = catelogyService.findAll();
+
+        request.setAttribute("product",product);
+        request.setAttribute("categories", categories);
 
 
-//    private void alertDeleteProduct(HttpServletRequest request, HttpServletResponse response) {
-//
-//        int index = Integer.parseInt(request.getParameter("id")) ;
-////        boolean check = ((checkID)productService).checkID("123");
-//
-//        productService.deleteProduct(index);
-//
-//        showAllProduct(request,response);
-//
-//    }
+        if(product== null){
+            dispatcher= request.getRequestDispatcher("error-404.jsp");
+        } else {
+            dispatcher = request.getRequestDispatcher("/products/formEdit.jsp");
+        }
 
-//    private void showUpdateProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        RequestDispatcher dispatcher;
-//
-//        int index = Integer.parseInt(request.getParameter("id"));
-//
-//        Product product = productService.getProductByIndex(index);
-//        ArrayList<Category> categories = catalogyService.findAll();
-//
-//        request.setAttribute("product",product);
-//        request.setAttribute("categories", categories);
-//
-//
-//        if(product== null){
-//            dispatcher= request.getRequestDispatcher("error-404.jsp");
-//        } else {
-//            dispatcher = request.getRequestDispatcher("/products/formEdit.jsp");
-//        }
-//
-//        dispatcher.forward(request,response);
-//
+        dispatcher.forward(request,response);
 
-//
-//    }
+
+    }
+
 
     private void showCreatProduct(HttpServletRequest request, HttpServletResponse response) throws SQLException {
         ArrayList<Category> categories = catelogyService.findAll();
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("/products/create.jsp");
         request.setAttribute("categories", categories);
-        Product product =new Product();
-        request.setAttribute("product", product);
+
 
         try {
             dispatcher.forward(request,response);
@@ -155,77 +115,81 @@ public class Controller extends HttpServlet {
         if (action == null) {
             action = "";
         }
-        switch (action) {
-//            case "create":
-//                creatProduct(request,response);
-//                break;
-//            case "update":
-//                updateProduct(request, response);
-//                break;
+
+        try{
+            switch (action) {
+                case "create":
+                    creatProduct(request, response);
+                    break;
+            case "edit":
+                updateProduct(request, response);
+                break;
 //            case "delete" :
 //                break;
 //            case "detail" :
 //                break;
-//            default :
-//                showAllProduct(request, response);
-//                break;
+            default :
+                showAllProduct(request, response);
+                break;
+
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void updateProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, SQLException, IOException {
+
+        int id = Integer.parseInt(request.getParameter("id"));
+        // không khai báo trong fromEdit tuy nhiên "id" đã tồn tại trên url
+
+        String name = request.getParameter("name");
+        float price = Float.parseFloat(request.getParameter("price"));
+        int quanlity= Integer.parseInt(request.getParameter("quanlity"));
+
+        String color = request.getParameter("color");
+        String description = request.getParameter("description");
+
+
+        int category_id =Integer.parseInt(request.getParameter("category_id")) ;
+
+        Category category= new Category(category_id);
+
+        Product product = new Product(id, name,quanlity, price,color, description, category);
+
+        productService.edit(id, product);
+
+        showAllProduct(request,response);
+
+    }
+
+
+
+
+    private void creatProduct(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+//            int id = Integer.parseInt(request.getParameter("id"));
+            String name = request.getParameter("name");
+            float price = Float.parseFloat(request.getParameter("price"));
+            int quanlity = Integer.parseInt(request.getParameter("quanlity"));
+            String color = request.getParameter("color");
+            String description = request.getParameter("description");
+
+            int category_id= Integer.parseInt(request.getParameter("category_id"));
+            Category category = new Category(category_id);
+
+            Product product = new Product(name, quanlity, price,color,description,category);
+
+            productService.create(product);
+
+            try {
+                showAllProduct(request,response);
+            } catch (SQLException | ServletException throwables) {
+                throwables.printStackTrace();
+            }
+
 
         }
 
-//
-//        private void updateProduct(HttpServletRequest request, HttpServletResponse response) {
-//
-//            int index = Integer.parseInt(request.getParameter("id"));
-//            // không khai báo trong fromEdit tuy nhiên "id" đã tồn tại trên url
-//
-//            String name = request.getParameter("name");
-//            int price = Integer.parseInt(request.getParameter("price"));
-//            String description = request.getParameter("description");
-//            String producer = request.getParameter("producer");
-//
-//            int category_id =Integer.parseInt(request.getParameter("category_id")) ;
-//
-//            Category category= new Category(category_id);
-//
-//            Product product = new Product( name, price, description, producer);
-//
-//            product.setCategory(category);
-//
-//
-//
-//            if(product==null){
-//                RequestDispatcher dispatcher = request.getRequestDispatcher("/error-404");
-//            }else{
-//
-//                productService.updateProduct(index, product);
-//
-//                showAllProduct(request,response);
-//            }
-//
-//
-//        }
-//
-//        private void creatProduct(HttpServletRequest request, HttpServletResponse response) throws IOException {
-//
-////        int id = Integer.parseInt(request.getParameter("id"));
-//            String name = request.getParameter("name");
-//            int price = Integer.parseInt(request.getParameter("price"));
-//            String description = request.getParameter("description");
-//            String producer = request.getParameter("producer");
-//
-//            Product product = new Product(name,price, description, producer);
-//
-//            int category_id= Integer.parseInt(request.getParameter("category_id"));
-//            Category category = new Category(category_id);
-//            product.setCategory(category);
-//
-//            productService.creatProduct(product);
-//
-////        showAllProduct(request,response);
-//
-//            response.sendRedirect("/products");
-//
-//        }
-//    }
-    }
 }

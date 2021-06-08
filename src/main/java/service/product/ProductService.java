@@ -51,9 +51,11 @@ public class ProductService implements IProductService {
             PreparedStatement preparedStatement = connection.prepareStatement(newProduct);
             preparedStatement.setString(1,product.getName());
             preparedStatement.setFloat(2,product.getPrice());
-            preparedStatement.setString(3,product.getDescription());
+            preparedStatement.setInt(3,product.getQuanlity());
+            preparedStatement.setString(4,product.getColor());
+            preparedStatement.setString(5,product.getDescription());
 //            preparedStatement.setString(4,product.getProducer());
-            preparedStatement.setInt(5,product.getCategory().getId());
+            preparedStatement.setInt(6,product.getCategory().getId());
 
             System.out.println(preparedStatement);
 
@@ -65,22 +67,25 @@ public class ProductService implements IProductService {
 
     @Override
     public void edit(int index, Product product) {
-//        String update = "update Product set name=?, price=?, description=?, producer=?, category_id=? where id=?  ";
-//        try {
-//            PreparedStatement preparedStatement = connection.prepareStatement(update);
-//            preparedStatement.setInt(6,index);
-//            preparedStatement.setString(1, product.getName());
-//            preparedStatement.setInt(2, product.getPrice());
-//            preparedStatement.setString(3, product.getDescription());
-//            preparedStatement.setString(4, product.getProducer());
-//            preparedStatement.setInt(5, product.getCategory().getId());
-//
-//            preparedStatement.executeUpdate();
-//
-//        } catch (SQLException throwables) {
-//            throwables.printStackTrace();
-//        }
-//
+        String update = "update Products set name=?,  price=?, quanlity=?,color=?, description=? category_id=? where id=?  ";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(update);
+            preparedStatement.setInt(7,index);
+            preparedStatement.setString(1, product.getName());
+            preparedStatement.setFloat(2, product.getPrice());
+            preparedStatement.setInt(3, product.getQuanlity());
+
+            preparedStatement.setString(4, product.getColor());
+            preparedStatement.setString(5, product.getDescription());
+
+            preparedStatement.setInt(6, product.getCategory().getId());
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
     }
 
     @Override
@@ -102,29 +107,31 @@ public class ProductService implements IProductService {
     @Override
     public Product getObjectById(int id) {
         Product product = null;
-//
-//        String query = "select * from Product where id=?";
-//        try {
-//            PreparedStatement preparedStatement = connection.prepareStatement(query);
-//            preparedStatement.setInt(1,id);
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//
-//            while(resultSet.next()) {
-//
-//                int id = resultSet.getInt("id");
-//                String name = resultSet.getString("name");
-//                int price = resultSet.getInt("price");
-//                String description = resultSet.getString("description");
-//                String producer = resultSet.getString("producer");
-//
-////                product = new Product(id, name, price, description, producer);
-//            }
-//
-//        }
-//        catch(SQLException e){
-//            e.printStackTrace();
-//        }
-//
+
+        String query = "select * from Products where id=?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()) {
+
+
+                String name = resultSet.getString("name");
+                float price = resultSet.getFloat("price");
+                int quanlity =resultSet.getInt("quanlity");
+
+                String color = resultSet.getString("color");
+                String description = resultSet.getString("description");
+
+                product = new Product(id, name, quanlity, price, color, description);
+            }
+
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+
         return product;
     }
 }

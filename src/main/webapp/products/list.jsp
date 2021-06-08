@@ -15,7 +15,7 @@
 
 <h1>Danh sách sản phẩm</h1>
 
-<div><a href="/products?action=create">Thêm sản phẩm</a></div>
+<div><a href="/product?action=create">Thêm sản phẩm</a></div>
 <table border="1" cellspacing="0px" cellpadding="0.5px">
     <tr>
         <th>ID</th>
@@ -40,7 +40,7 @@
 
             <td>${product.category.name}</td>
 
-            <td><a href="product?action=update&id=${product.id}">edit</a></td>
+            <td><a href="product?action=edit&id=${product.id}">edit</a></td>
             <td><a href="product?action=delete&id=${product.id}">delele</a></td>
 
         </tr>
